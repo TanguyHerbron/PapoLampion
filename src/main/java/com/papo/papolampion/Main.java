@@ -43,8 +43,8 @@ public class Main {
             client = new MqttClient("tcp://mpd.lan:1883", MqttClient.generateClientId());
             client.connect();
             MqttMessage message = new MqttMessage();
-            message.setPayload(new byte[]{(byte)0xff, (byte)0x14, (byte)0x93});
-            client.publish("laumio/all/fill", message);
+            message.setPayload("{'command': 'fill', 'rgb': [255, 0, 0]}".getBytes());
+            client.publish("laumio/all/json", message);
 
             System.out.println("pub");
 
