@@ -1,55 +1,42 @@
 package com.papo.papolampion;
 
-import com.sun.xml.internal.ws.util.ByteArrayBuffer;
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-
-import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
+import com.papo.lib.Laumio;
+import org.eclipse.paho.client.mqttv3.*;
 
 public class Main {
 
     public static void main(String[] args)
     {
-        final Main main = new Main();
-
-        /*new Thread(new Runnable() {
-            public void run() {
-                main.sub();
-            }
-        }).start();*/
-
-        main.pub();
-    }
-
-    private void sub()
-    {
-        MqttClient client= null;
         try {
-            client = new MqttClient("tcp://mpd.lan:1883", MqttClient.generateClientId());
-            client.setCallback( new MQTTCallback() );
-            client.connect();
-            client.subscribe("laumio/status/advertise");
+            Laumio pub = new Laumio("tcp://mpd.lan:1883", new MqttCallback() {
+                public void connectionLost(Throwable throwable) {
+                    System.out.println("Disconnected");
+                }
+
+                public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
+                    System.out.println(">> " + new String(mqttMessage.getPayload()));
+                }
+
+                public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+                    System.out.println("Message sent");
+                }
+            });
+
+            int i = 0;
+
+            while(i < 255)
+            {
+                pub.fill(i, i, i);
+
+                Thread.sleep(100);
+
+                i++;
+            }
+
+            pub.close();
         } catch (MqttException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void pub()
-    {
-        MqttClient client = null;
-        try {
-            client = new MqttClient("tcp://mpd.lan:1883", MqttClient.generateClientId());
-            client.connect();
-            MqttMessage message = new MqttMessage();
-            message.setPayload("{'command': 'fill', 'rgb': [255, 0, 0]}".getBytes());
-            client.publish("laumio/all/json", message);
-
-            System.out.println("pub");
-
-            client.disconnect();
-        } catch (MqttException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
