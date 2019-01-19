@@ -14,7 +14,7 @@ public class TestUI extends Application{
     
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("views/TestScreen.fxml"));
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/TestScreen.fxml"));
         Parent root = fxmlLoader.load();
         primaryStage.setTitle("Laumio Tester");
         primaryStage.setScene(new Scene(root, 512, 512));
