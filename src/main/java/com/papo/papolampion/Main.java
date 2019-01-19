@@ -14,11 +14,11 @@ public class Main {
     {
         final Main main = new Main();
 
-        new Thread(new Runnable() {
+        /*new Thread(new Runnable() {
             public void run() {
                 main.sub();
             }
-        }).start();
+        }).start();*/
 
         main.pub();
     }
@@ -45,6 +45,9 @@ public class Main {
             MqttMessage message = new MqttMessage();
             message.setPayload(new byte[]{(byte)0xff, (byte)0x14, (byte)0x93});
             client.publish("laumio/all/fill", message);
+
+            System.out.println("pub");
+
             client.disconnect();
         } catch (MqttException e) {
             e.printStackTrace();
