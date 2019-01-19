@@ -29,9 +29,14 @@ public class Laumio {
         client.publish("laumio/all/json", message);
     }
 
-    public void set_pixel() throws MqttException
+    public void set_all_columns(int R, int G, int B) throws MqttException
     {
+        MqttMessage message = new MqttMessage();
+        message.setPayload(("{'commands': [{'command': 'set_column','column': 0,'rgb': [" + R + ", " + G + ", " + B + "]},{'command': 'set_column','column': 1,'rgb': [" + R + ", " + G + ", " + B + "]}]}").getBytes());
 
+        System.out.println(new String(message.getPayload()));
+
+        client.publish("laumio/all/json", message);
     }
 
     public void close() throws MqttException
@@ -39,4 +44,8 @@ public class Laumio {
         client.disconnect();
     }
 
+    public void testAtmo() throws MqttException {
+
+        client.publish("atmosphere/status/advertise", new MqttMessage());
+    }
 }

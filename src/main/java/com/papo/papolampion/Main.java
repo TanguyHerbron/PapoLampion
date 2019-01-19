@@ -3,6 +3,8 @@ package com.papo.papolampion;
 import com.papo.lib.Laumio;
 import org.eclipse.paho.client.mqttv3.*;
 
+import java.util.Random;
+
 public class Main {
 
     public static void main(String[] args)
@@ -14,24 +16,25 @@ public class Main {
                 }
 
                 public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
-                    System.out.println(">> " + new String(mqttMessage.getPayload()));
+                    System.out.println(">> " + s + " " + new String(mqttMessage.getPayload()));
                 }
 
                 public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-                    System.out.println("Message sent");
+                    //When a message is sent
                 }
             });
 
-            int i = 0;
+            pub.listenTo("atmosphere/status");
+            pub.listenTo("atmosphere/temperature");
+            pub.listenTo("atmosphere/pression");
+            pub.listenTo("atmosphere/humidite");
+            pub.listenTo("atmosphere/humidite_absolue");
 
-            while(i < 255)
-            {
-                pub.fill(i, i, i);
+            pub.testAtmo();
 
-                Thread.sleep(100);
+            pub.set_all_columns(10, 255, 0);
 
-                i++;
-            }
+            Thread.sleep(1500);
 
             pub.close();
         } catch (MqttException e) {
