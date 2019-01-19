@@ -5,8 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane prefHeight="469.0" prefWidth="535.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="com.papo.ui.controller.TestController">
+<AnchorPane prefHeight="469.0" prefWidth="535.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.papo.ui.controller.TestController">
    <children>
       <Pane prefHeight="469.0" prefWidth="535.0">
          <children>
@@ -14,6 +13,9 @@
             <ChoiceBox fx:id="ChoiceBox_LaumioID" layoutX="14.0" layoutY="14.0" prefHeight="25.0" prefWidth="80.0" />
             <ChoiceBox fx:id="ChoiceBox_Command" layoutX="105.0" layoutY="14.0" prefHeight="25.0" prefWidth="117.0" />
             <Button fx:id="Button_Send" layoutX="467.0" layoutY="14.0" mnemonicParsing="false" text="Send" />
+            <ListView fx:id="ListView_Enable" layoutX="5.0" layoutY="123.0" prefHeight="200.0" prefWidth="200.0" />
+            <ListView fx:id="ListView_Disable" layoutX="219.0" layoutY="123.0" prefHeight="200.0" prefWidth="200.0" />
+            <ProgressBar fx:id="ProgressBar_Distance" layoutX="19.0" layoutY="381.0" prefWidth="200.0" progress="0.0" />
          </children>
       </Pane>
    </children>
