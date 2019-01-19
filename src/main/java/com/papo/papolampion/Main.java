@@ -24,15 +24,17 @@ public class Main {
                 }
             });
 
+            pub.listenTo("laumio/status/advertise");
             pub.listenTo("atmosphere/status");
             pub.listenTo("atmosphere/temperature");
             pub.listenTo("atmosphere/pression");
             pub.listenTo("atmosphere/humidite");
             pub.listenTo("atmosphere/humidite_absolue");
 
+            pub.lookForIDs();
             pub.testAtmo();
 
-            pub.set_all_columns(10, 255, 0);
+            //pub.set_all_columns(10, 255, 0);
 
             Thread.sleep(1500);
 

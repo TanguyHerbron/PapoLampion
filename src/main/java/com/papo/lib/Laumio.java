@@ -48,4 +48,8 @@ public class Laumio {
 
         client.publish("atmosphere/status/advertise", new MqttMessage());
     }
+
+    public void lookForIDs() throws MqttException {
+        client.publish("laumio/all/discover", new MqttMessage());
+    }
 }
