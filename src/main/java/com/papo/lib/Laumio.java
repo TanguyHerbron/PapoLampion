@@ -18,6 +18,78 @@ public class Laumio {
         client.subscribe(topic);
     }
 
+    public void setRing(int ring, int R, int G, int B) throws MqttException
+    {
+        MqttMessage message = new MqttMessage();
+        message.setPayload(("{'command': 'set_pixel'," +
+                "'ring': " + ring + ",'rgb': [" +
+                R + ", " +
+                G + ", " +
+                B + "]}").getBytes());
+
+        client.publish("laumio/all/json", message);
+    }
+
+    public void setRing(String id, int ring, int R, int G, int B) throws MqttException
+    {
+        MqttMessage message = new MqttMessage();
+        message.setPayload(("{'command': 'set_pixel'," +
+                "'ring': " + ring + ",'rgb': [" +
+                R + ", " +
+                G + ", " +
+                B + "]}").getBytes());
+
+        client.publish("laumio/" + id + "/json", message);
+    }
+
+    public void setPixel(int pixelId, int R, int G, int B) throws MqttException
+    {
+        MqttMessage message = new MqttMessage();
+        message.setPayload(("{'command': 'set_pixel'," +
+                "'led': " + pixelId + ",'rgb': [" +
+                R + ", " +
+                G + ", " +
+                B + "]}").getBytes());
+
+        client.publish("laumio/all/json", message);
+    }
+
+    public void setPixel(String id, int pixelId, int R, int G, int B) throws MqttException
+    {
+        MqttMessage message = new MqttMessage();
+        message.setPayload(("{'command': 'set_pixel'," +
+                "'led': " + pixelId + ",'rgb': [" +
+                R + ", " +
+                G + ", " +
+                B + "]}").getBytes());
+
+        client.publish("laumio/" + id + "/json", message);
+    }
+
+    public void setColumn(int row, int R, int G, int B) throws MqttException
+    {
+        MqttMessage message = new MqttMessage();
+        message.setPayload(("{'command': 'set_column'," +
+                "'column': " + row + ", 'rgb': [" +
+                R + ", " +
+                G + ", " +
+                B + "]}").getBytes());
+
+        client.publish("laumio/all/json", message);
+    }
+
+    public void setColumn(String id, int row, int R, int G, int B) throws MqttException
+    {
+        MqttMessage message = new MqttMessage();
+        message.setPayload(("{'command': 'set_column'," +
+                "'column': " + row + ", 'rgb': [" +
+                R + ", " +
+                G + ", " +
+                B + "]}").getBytes());
+
+        client.publish("laumio/" + id + "/json", message);
+    }
+
     public void fill(int R, int G, int B) throws MqttException
     {
         MqttMessage message = new MqttMessage();
@@ -27,6 +99,48 @@ public class Laumio {
                 B + "]}").getBytes());
 
         client.publish("laumio/all/json", message);
+    }
+
+    public void color_wipe(int duration, int R, int G, int B) throws MqttException
+    {
+        MqttMessage message = new MqttMessage();
+        message.setPayload(("{'command': 'color_wipe'," +
+                "'duration': " + duration + "," +
+                "'rgb': [" +
+                R + ", " +
+                G + ", " +
+                B + "]}").getBytes());
+
+        client.publish("laumio/all/json", message);
+    }
+
+    public void color_wipe(String id, int duration, int R, int G, int B) throws MqttException
+    {
+        MqttMessage message = new MqttMessage();
+        message.setPayload(("{'command': 'color_wipe'," +
+                "'duration': " + duration + "," +
+                "'rgb': [" +
+                R + ", " +
+                G + ", " +
+                B + "]}").getBytes());
+
+        client.publish("laumio/" + id + "/json", message);
+    }
+
+    public void rainbow() throws MqttException
+    {
+        MqttMessage message = new MqttMessage();
+        message.setPayload(("{'command': 'animate_rainbow'}").getBytes());
+
+        client.publish("laumio/all/json", message);
+    }
+
+    public void rainbow(String id) throws MqttException
+    {
+        MqttMessage message = new MqttMessage();
+        message.setPayload(("{'command': 'animate_rainbow'}").getBytes());
+
+        client.publish("laumio/" + id + "/json", message);
     }
 
     public void fill(String id, int R, int G, int B) throws MqttException
