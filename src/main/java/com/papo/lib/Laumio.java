@@ -4,20 +4,37 @@ import org.eclipse.paho.client.mqttv3.*;
 
 import java.util.Set;
 
-public class Laumio {
+public class Laumio implements MqttCallback {
 
     private MqttClient client;
 
-    public Laumio(String address, MqttCallback callback) throws MqttException
+    private boolean bpSub = false;
+
+    public Laumio(String address) throws MqttException
     {
         client = new MqttClient(address, MqttClient.generateClientId());
-        client.setCallback(callback);
+        client.setCallback(this);
         client.connect();
     }
 
     public void listenTo(String topic) throws MqttException
     {
         client.subscribe(topic);
+    }
+
+    public void addBPListener(BPCallback callback) throws MqttException
+    {
+        client.subscribe("capteur_bp/status");
+        client.subscribe("capteur_bp/switch/0/state");
+        client.subscribe("capteur_bp/switch/1/state");
+        client.subscribe("capteur_bp/switch/2/state");
+        client.subscribe("capteur_bp/switch/3/state");
+        client.subscribe("capteur_bp/binary_sensor/0/state");
+        client.subscribe("capteur_bp/binary_sensor/1/state");
+        client.subscribe("capteur_bp/binary_sensor/2/state");
+        client.subscribe("capteur_bp/binary_sensor/3/state");
+        client.subscribe("capteur_bp/sensor/bp_rssi/state");
+        client.subscribe("capteur_bp/sensor/uptime_sensor/state");
     }
 
     public void setRing(int ring, int R, int G, int B) throws MqttException
@@ -226,5 +243,25 @@ public class Laumio {
 
     public void lookForIDs() throws MqttException {
         client.publish("laumio/all/discover", new MqttMessage());
+    }
+
+    public void connectionLost(Throwable throwable) {
+
+    }
+
+    public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
+
+    }
+
+    public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
+
+    }
+
+    private interface BPCallback {
+        void onStatusChanged();
+        void onLedStatusChanged(int ledNumber);
+        void onBPStatusChanged(int bpNumber);
+        void onRSSIChanged(float db);
+        void onUptimeChanged(long uptime);
     }
 }

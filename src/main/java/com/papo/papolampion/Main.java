@@ -13,26 +13,14 @@ public class Main {
     private static Set<String> lampList;
     private static Laumio pub;
 
+    private static boolean isOn = true;
+
     public static void main(String[] args)
     {
         lampList = new HashSet<String>();
 
         try {
-            pub = new Laumio("tcp://mpd.lan:1883", new MqttCallback() {
-                public void connectionLost(Throwable throwable) {
-                    System.out.println("Disconnected");
-                }
-
-                public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
-                    System.out.println(">> " + s + " " + new String(mqttMessage.getPayload()) );
-
-                    processReceivedMessage(s, mqttMessage);
-                }
-
-                public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-                    //When a message is sent
-                }
-            });
+            pub = new Laumio("tcp://mpd.lan:1883");
 
             pub.listenTo("laumio/status/advertise");
             pub.listenTo("distance/value");
@@ -41,24 +29,16 @@ public class Main {
             pub.listenTo("atmosphere/pression");
             pub.listenTo("atmosphere/humidite");
             pub.listenTo("atmosphere/humidite_absolue");
+            pub.listenTo("remote/power/state");
 
             pub.lookForIDs();
             pub.testAtmo();
 
             pub.fill("Laumio_10805F", 0, 255, 0);
-
             pub.fill("Laumio_88813D", 0, 255, 0);
-
             pub.fill("Laumio_CD0522", 0, 255, 0);
-
             pub.fill("Laumio_1D9486", 0, 255, 0);
-
-            Thread.sleep(200000);
-
-            pub.close();
         } catch (MqttException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -74,6 +54,24 @@ public class Main {
         {
             try {
                 pub.fill("Laumio_1D9486", 0, (int) Math.floor(Double.parseDouble(new String(mqttMessage.getPayload())) * 100), 0);
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(topic.equals("remote/power/state") && new String(mqttMessage.getPayload()).equals("OFF"))
+        {
+            try {
+                if(isOn)
+                {
+                    pub.fill("Laumio_0FC168", 0, 0, 0);
+                }
+                else
+                {
+                    pub.fill("Laumio_0FC168", 255, 255, 255);
+                }
+
+                isOn = !isOn;
             } catch (MqttException e) {
                 e.printStackTrace();
             }
