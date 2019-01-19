@@ -2,6 +2,8 @@ package com.papo.lib;
 
 import org.eclipse.paho.client.mqttv3.*;
 
+import java.util.Set;
+
 public class Laumio {
 
     private MqttClient client;
@@ -42,6 +44,14 @@ public class Laumio {
         client.publish("laumio/" + id + "/json", message);
     }
 
+    public void setRing(Set<String> ids, int ring, int R, int G, int B) throws MqttException
+    {
+        for(String id : ids)
+        {
+            setRing(id, ring, R, G, B);
+        }
+    }
+
     public void setPixel(int pixelId, int R, int G, int B) throws MqttException
     {
         MqttMessage message = new MqttMessage();
@@ -64,6 +74,14 @@ public class Laumio {
                 B + "]}").getBytes());
 
         client.publish("laumio/" + id + "/json", message);
+    }
+
+    public void setPixel(Set<String> ids, int pixelId, int R, int G, int B) throws MqttException
+    {
+        for(String id : ids)
+        {
+            setPixel(id, pixelId, R, G, B);
+        }
     }
 
     public void setColumn(int row, int R, int G, int B) throws MqttException
@@ -90,6 +108,14 @@ public class Laumio {
         client.publish("laumio/" + id + "/json", message);
     }
 
+    public void setColumn(Set<String> ids, int row, int R, int G, int B) throws MqttException
+    {
+        for(String id : ids)
+        {
+            setColumn(id, row, R, G, B);
+        }
+    }
+
     public void fill(int R, int G, int B) throws MqttException
     {
         MqttMessage message = new MqttMessage();
@@ -99,6 +125,25 @@ public class Laumio {
                 B + "]}").getBytes());
 
         client.publish("laumio/all/json", message);
+    }
+
+    public void fill(String id, int R, int G, int B) throws MqttException
+    {
+        MqttMessage message = new MqttMessage();
+        message.setPayload(("{'command': 'fill', 'rgb': [" +
+                R + ", " +
+                G + ", " +
+                B + "]}").getBytes());
+
+        client.publish("laumio/" + id + "/json", message);
+    }
+
+    public void fill(Set<String> ids, int R, int G, int B) throws MqttException
+    {
+        for(String id : ids)
+        {
+            fill(id, R, G, B);
+        }
     }
 
     public void color_wipe(int duration, int R, int G, int B) throws MqttException
@@ -127,6 +172,14 @@ public class Laumio {
         client.publish("laumio/" + id + "/json", message);
     }
 
+    public void color_wipe(Set<String> ids, int duration, int R, int G, int B) throws MqttException
+    {
+        for(String id : ids)
+        {
+            color_wipe(id, duration, R, G, B);
+        }
+    }
+
     public void rainbow() throws MqttException
     {
         MqttMessage message = new MqttMessage();
@@ -143,15 +196,12 @@ public class Laumio {
         client.publish("laumio/" + id + "/json", message);
     }
 
-    public void fill(String id, int R, int G, int B) throws MqttException
+    public void rainbow(Set<String> ids) throws MqttException
     {
-        MqttMessage message = new MqttMessage();
-        message.setPayload(("{'command': 'fill', 'rgb': [" +
-                R + ", " +
-                G + ", " +
-                B + "]}").getBytes());
-
-        client.publish("laumio/" + id + "/json", message);
+        for(String id : ids)
+        {
+            rainbow(id);
+        }
     }
 
     public void set_all_columns(int R, int G, int B) throws MqttException
