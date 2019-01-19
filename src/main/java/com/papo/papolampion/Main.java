@@ -5,6 +5,7 @@ import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
 public class Main {
@@ -37,17 +38,12 @@ public class Main {
 
     private void pub()
     {
-        Byte command = Byte.parseByte("0xFF");
-        Byte r = Byte.parseByte("0xFF");
-        Byte g = Byte.parseByte("0X14");
-        Byte b = Byte.parseByte("0x93");
-
         MqttClient client = null;
         try {
-            client = new MqttClient("tcp://localhost:1883", MqttClient.generateClientId());
+            client = new MqttClient("tcp://mpd.lan:1883", MqttClient.generateClientId());
             client.connect();
             MqttMessage message = new MqttMessage();
-            message.setPayload(new byte[]{r, g, b});
+            message.setPayload(new byte[]{(byte)0xff, (byte)0x14, (byte)0x93});
             client.publish("laumio/all/fill", message);
             client.disconnect();
         } catch (MqttException e) {
