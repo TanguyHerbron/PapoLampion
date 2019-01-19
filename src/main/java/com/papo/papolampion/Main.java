@@ -22,7 +22,7 @@ public class Main {
         try {
             pub = new Laumio("tcp://mpd.lan:1883");
 
-            pub.listenTo("laumio/status/advertise");
+            /*pub.listenTo("laumio/status/advertise");
             pub.listenTo("distance/value");
             pub.listenTo("atmosphere/status");
             pub.listenTo("atmosphere/temperature");
@@ -37,7 +37,36 @@ public class Main {
             pub.fill("Laumio_10805F", 0, 255, 0);
             pub.fill("Laumio_88813D", 0, 255, 0);
             pub.fill("Laumio_CD0522", 0, 255, 0);
-            pub.fill("Laumio_1D9486", 0, 255, 0);
+            pub.fill("Laumio_1D9486", 0, 255, 0);*/
+
+            pub.addBPListener(new Laumio.BPCallback() {
+                public void onStatusChanged(boolean isOn) {
+                    System.out.println("Sensor online " + isOn);
+                }
+
+                public void onLedStatusChanged(int ledNumber, boolean isOn) {
+                    System.out.println("Led " + ledNumber + " bright : " + isOn);
+                }
+
+                public void onBPStatusChanged(int bpNumber, boolean isOn) {
+                    System.out.println("BP " + bpNumber + " pressed : " + isOn);
+                }
+
+                public void onRSSIChanged(float db) {
+                    System.out.println("WiFi : " + db + "db");
+                }
+
+                public void onUptimeChanged(long uptime) {
+                    System.out.println("System running for " + uptime + " minutes");
+                }
+            });
+
+            pub.addRemoteListener(new Laumio.RemoteCallback() {
+                public void onKeyReceived(String key) {
+                    System.out.println("Key pressed " + key);
+                }
+            });
+
         } catch (MqttException e) {
             e.printStackTrace();
         }
