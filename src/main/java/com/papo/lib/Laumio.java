@@ -24,11 +24,6 @@ public class Laumio implements MqttCallback {
         client.subscribe("laumio/status/advertise");
     }
 
-    public void listenTo(String topic) throws MqttException
-    {
-        client.subscribe(topic);
-    }
-
     public void refreshIDs(IDCallback callback) throws MqttException
     {
         idCallback = callback;

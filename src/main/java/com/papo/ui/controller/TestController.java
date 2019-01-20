@@ -4,6 +4,7 @@ package com.papo.ui.controller;
 import java.net.URL;
 import java.util.*;
 
+import com.papo.papolampion.BotListener;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -11,6 +12,9 @@ import javafx.collections.FXCollections;
 
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import net.dv8tion.jda.core.AccountType;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.JDABuilder;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 import com.papo.lib.Laumio;
@@ -23,6 +27,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+
+import javax.security.auth.login.LoginException;
 
 public class TestController implements Initializable {
 	@FXML private VBox  VBox_Connection;
@@ -68,7 +74,7 @@ public class TestController implements Initializable {
 	private Color color;
 	private List<CheckBox> ledList;
 
-	private Thread policeThread;
+	private BotListener botListener;
     
 	public void initialize(URL location, ResourceBundle resources) {
 		idList = new HashSet<String>();
@@ -89,6 +95,26 @@ public class TestController implements Initializable {
 		ledList.add(CheckBox_LED13);
 		
 		ConnectionInit();
+	}
+
+	private void InitDiscordBot()
+	{
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					JDA jda = new JDABuilder(AccountType.BOT)
+							.setToken("NTM2NDMwNjExMTUwNDA1NjQy.DyWm7g.XZ2c6PvTZl1mcifW2RC8MA51BuQ")
+							.build();
+
+					botListener = new BotListener(laumio, jda);
+
+					jda.addEventListener(botListener);
+				} catch (LoginException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
 	}
 	
 	public void ConnectionInit()
@@ -111,19 +137,22 @@ public class TestController implements Initializable {
 	
 	public void Connect(String ip) throws MqttException
 	{
-			laumio = new Laumio(ip);
-			laumio.refreshIDs(new Laumio.IDCallback() {
-	                @Override
-	                public void onIDReceived(String id) {
-	                	int size = idList.size();
-	                idList.add(id);
-	                if(size < idList.size()) {
-	                	AddNewToListDisable(id);
-	                }
-	                }
-	            });
-			ListnerInit();
-			FunctionsInit();
+		laumio = new Laumio(ip);
+		laumio.refreshIDs(new Laumio.IDCallback() {
+				@Override
+				public void onIDReceived(String id) {
+					int size = idList.size();
+					idList.add(id);
+					if(size < idList.size()) {
+						AddNewToListDisable(id);
+					}
+				}
+			});
+		ListnerInit();
+		FunctionsInit();
+
+
+		InitDiscordBot();
 	}
 
 	public void ListnerInit(){
@@ -141,14 +170,14 @@ public class TestController implements Initializable {
 				@Override
 				public void onKeyReceived(String key, boolean isOn) {
 
-				    System.out.println(">> " + key + " " + isOn);
-
 				    Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
 							if(isOn)
 							{
 								Label_Log.setText(key + " as been pressed");
+
+								botListener.publish("On me titille la touche " + key + "...");
 							}
 							else
 							{
