@@ -11,6 +11,7 @@ public class Laumio implements MqttCallback {
     private BPCallback bpCallback;
     private RemoteCallback remoteCallback;
     private IDCallback idCallback;
+    private DisCallback disCallback;
 
     public Laumio(String address) throws MqttException
     {
@@ -48,6 +49,13 @@ public class Laumio implements MqttCallback {
         client.subscribe("capteur_bp/binary_sensor/4/state");
         client.subscribe("capteur_bp/sensor/bp_rssi/state");
         client.subscribe("capteur_bp/sensor/uptime_sensor/state");
+    }
+
+    public void addDisListener(DisCallback callback) throws MqttException
+    {
+        disCallback = callback;
+
+        client.subscribe("distance/value");
     }
 
     public void addRemoteListener(RemoteCallback callback) throws MqttException
@@ -114,6 +122,14 @@ public class Laumio implements MqttCallback {
         if(topic.contains("uptime_sensor"))
         {
             bpCallback.onUptimeChanged(Long.parseLong(new String(mqttMessage.getPayload())));
+        }
+    }
+
+    public void parseDistMessage(String topic, MqttMessage mqttMessage)
+    {
+        if(topic.contains("value"))
+        {
+            disCallback.onDistanceChange(Float.parseFloat(new String(mqttMessage.getPayload())));
         }
     }
 
@@ -315,6 +331,11 @@ public class Laumio implements MqttCallback {
         else if(s.equals("laumio/status/advertise")) {
             parseIDMessage(mqttMessage);
         }
+        else if(s.startsWith("distance")) {
+            parseDistMessage(s, mqttMessage);
+        }
+
+        System.out.println(">> " + s);
     }
 
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
@@ -335,5 +356,9 @@ public class Laumio implements MqttCallback {
 
     public interface IDCallback {
         void onIDReceived(String id);
+    }
+
+    public interface DisCallback {
+        void onDistanceChange(float dist);
     }
 }
