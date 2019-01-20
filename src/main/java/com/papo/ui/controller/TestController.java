@@ -281,7 +281,7 @@ public class TestController implements Initializable {
 			if(item.isSelected())
 			{
 				color = ColorPicker_Color1.getValue();
-				
+				System.out.println();
 				laumio.setPixel(new HashSet<String>(ListView_Enable.getItems()), ledList.indexOf(item), (int)Math.floor(color.getRed()*255), (int)Math.floor(color.getGreen()*255), (int)Math.floor(color.getBlue()*255));
 				}
 		}
