@@ -3,10 +3,7 @@ package com.papo.papolampion;
 import com.papo.lib.Laumio;
 import org.eclipse.paho.client.mqttv3.*;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public class Main {
 
@@ -21,23 +18,6 @@ public class Main {
 
         try {
             pub = new Laumio("tcp://mpd.lan:1883");
-
-            /*pub.listenTo("laumio/status/advertise");
-            pub.listenTo("distance/value");
-            pub.listenTo("atmosphere/status");
-            pub.listenTo("atmosphere/temperature");
-            pub.listenTo("atmosphere/pression");
-            pub.listenTo("atmosphere/humidite");
-            pub.listenTo("atmosphere/humidite_absolue");
-            pub.listenTo("remote/power/state");
-
-            pub.lookForIDs();
-            pub.testAtmo();
-
-            pub.fill("Laumio_10805F", 0, 255, 0);
-            pub.fill("Laumio_88813D", 0, 255, 0);
-            pub.fill("Laumio_CD0522", 0, 255, 0);
-            pub.fill("Laumio_1D9486", 0, 255, 0);*/
 
             pub.refreshIDs(new Laumio.IDCallback() {
                 @Override

@@ -1,6 +1,7 @@
 package com.papo.lib;
 
 import org.eclipse.paho.client.mqttv3.*;
+import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
 
 import java.util.Set;
 
@@ -316,6 +317,14 @@ public class Laumio implements MqttCallback {
         client.publish("laumio/all/discover", new MqttMessage());
     }
 
+    public void stockTheFuckingMusic() throws MqttException {
+        client.publish("music/control/stop", new MqttMessage());
+    }
+
+    public void nextMusic() throws MqttException {
+        client.publish("music/control/next", new MqttMessage());
+    }
+
     public void connectionLost(Throwable throwable) {
 
     }
@@ -334,8 +343,6 @@ public class Laumio implements MqttCallback {
         else if(s.startsWith("distance")) {
             parseDistMessage(s, mqttMessage);
         }
-
-        System.out.println(">> " + s);
     }
 
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
