@@ -2,11 +2,7 @@ package com.papo.ui.controller;
 
 
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -272,6 +268,9 @@ public class TestController implements Initializable {
 				case "Police":
 					Police();
 					break;
+				case "L'esprit chovin":
+					Chovin();
+					break;
 				}
 				} catch (MqttException e1) {
 					// TODO Auto-generated catch block
@@ -323,7 +322,8 @@ public class TestController implements Initializable {
 			    "Scanner",
 			    "Rainbow",
 			    "Individual",
-				"Police")
+				"Police",
+				"L'esprit chovin")
 				);
 		
 		VBox_Duration.setVisible(false);
@@ -355,6 +355,11 @@ public class TestController implements Initializable {
 					SetDurationOff();
 					SetIndividualOff();
 					break;
+
+				case "L'esprit chovin":
+					SetDurationOff();
+					SetIndividualOff();
+					break;
 				}
 			}
 		    });
@@ -373,6 +378,18 @@ public class TestController implements Initializable {
 		}
 	}
 
+	public void Chovin() throws MqttException
+	{
+		laumio.fill(new HashSet<String>(Arrays.asList("Laumio_1D9486")), 0, 0, 255);
+		laumio.fill(new HashSet<String>(Arrays.asList("Laumio_104F03")), 0, 0, 255);
+		laumio.fill(new HashSet<String>(Arrays.asList("Laumio_10805F")), 0, 0, 255);
+		laumio.fill(new HashSet<String>(Arrays.asList("Laumio_104A13")), 255, 255, 255);
+		laumio.fill(new HashSet<String>(Arrays.asList("Laumio_0FC168")), 255, 255, 255);
+		laumio.fill(new HashSet<String>(Arrays.asList("Laumio_0FBFBF")), 255, 0, 0);
+		laumio.fill(new HashSet<String>(Arrays.asList("Laumio_CD0522")), 255, 0, 0);
+		laumio.fill(new HashSet<String>(Arrays.asList("Laumio_107DA8")), 255, 0, 0);
+	}
+
 	public void Police()
 	{
 		new Thread(new Runnable() {
@@ -389,7 +406,7 @@ public class TestController implements Initializable {
 						laumio.setColumn(new HashSet<String>(ListView_Enable.getItems()), 3, 0, 0, 255);
 
 						try {
-							Thread.sleep(200);
+							Thread.sleep(50);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}
@@ -401,7 +418,7 @@ public class TestController implements Initializable {
 						laumio.setColumn(new HashSet<String>(ListView_Enable.getItems()), 3, 255, 0, 0);
 
 						try {
-							Thread.sleep(200);
+							Thread.sleep(50);
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 						}

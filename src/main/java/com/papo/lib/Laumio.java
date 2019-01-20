@@ -234,11 +234,6 @@ public class Laumio implements MqttCallback {
         client.publish("laumio/all/json", message);
     }
 
-    public void fill(String id, int R, int G, int B) throws MqttException
-    {
-
-    }
-
     public void fill(Set<String> ids, int R, int G, int B) throws MqttException
     {
         MqttMessage message = new MqttMessage();

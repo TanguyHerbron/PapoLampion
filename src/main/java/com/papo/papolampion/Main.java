@@ -69,7 +69,7 @@ public class Main {
         if(topic.equals("distance/value"))
         {
             try {
-                pub.fill("Laumio_1D9486", 0, (int) Math.floor(Double.parseDouble(new String(mqttMessage.getPayload())) * 100), 0);
+                pub.fill(new HashSet<>(Arrays.asList("Laumio_1D9486")), 0, (int) Math.floor(Double.parseDouble(new String(mqttMessage.getPayload())) * 100), 0);
             } catch (MqttException e) {
                 e.printStackTrace();
             }
@@ -80,11 +80,11 @@ public class Main {
             try {
                 if(isOn)
                 {
-                    pub.fill("Laumio_0FC168", 0, 0, 0);
+                    pub.fill(new HashSet<>(Arrays.asList("Laumio_0FC168")), 0, 0, 0);
                 }
                 else
                 {
-                    pub.fill("Laumio_0FC168", 255, 255, 255);
+                    pub.fill(new HashSet<>(Arrays.asList("Laumio_0FC168")), 255, 255, 255);
                 }
 
                 isOn = !isOn;
