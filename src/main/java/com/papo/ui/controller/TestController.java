@@ -2,14 +2,18 @@ package com.papo.ui.controller;
 
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
 
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 
 import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import com.papo.lib.Laumio;
 
@@ -18,12 +22,15 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -31,22 +38,45 @@ import javafx.stage.Stage;
 public class TestController implements Initializable {
 	@FXML private VBox  VBox_Connection;
 	@FXML private VBox VBox_Functions;
+	@FXML private VBox VBox_Duration;
+	@FXML private HBox HBox_Individual;
     @FXML private Button Button_Send;
     @FXML private Button Button_Exit;
     @FXML private Button Button_Connect;
     @FXML private ColorPicker ColorPicker_Color1;
-    @FXML private ChoiceBox<String> ChoiceBox_LaumioID;
     @FXML private ChoiceBox<String> ChoiceBox_Command;
     @FXML private ListView<String> ListView_Enable;
     @FXML private ListView<String> ListView_Disable;
     @FXML private ProgressBar ProgressBar_Distance;
     @FXML private TextField TextField_IP;
     @FXML private TextField TextField_Port;
+    @FXML private Slider Slider_Duration;
+    @FXML private TextArea TextArea_Log;
     
+    @FXML private CheckBox CheckBox_LED1;
+    @FXML private CheckBox CheckBox_LED2;
+    @FXML private CheckBox CheckBox_LED3;
+    @FXML private CheckBox CheckBox_LED4;
+    @FXML private CheckBox CheckBox_LED5;
+    @FXML private CheckBox CheckBox_LED6;
+    @FXML private CheckBox CheckBox_LED7;
+    @FXML private CheckBox CheckBox_LED8;
+    @FXML private CheckBox CheckBox_LED9;
+    @FXML private CheckBox CheckBox_LED10;
+    @FXML private CheckBox CheckBox_LED11;
+    @FXML private CheckBox CheckBox_LED12;
+    @FXML private CheckBox CheckBox_LED13;
+    
+    private Set<String> idList;
     
     private Laumio laumio;
+	private Color color;
+	private List<CheckBox> ledList;
     
 	public void initialize(URL location, ResourceBundle resources) {
+		idList = new HashSet<String>();
+		ledList = new ArrayList<CheckBox>();
+		
 		ConnectionInit();
 	}
 	
@@ -70,58 +100,90 @@ public class TestController implements Initializable {
 	public void Connect(String ip) throws MqttException
 	{
 			laumio = new Laumio(ip);
+			laumio.refreshIDs(new Laumio.IDCallback() {
+	                @Override
+	                public void onIDReceived(String id) {
+	                	int size = idList.size();
+	                idList.add(id);
+	                if(size < idList.size()) {
+	                	AddNewToListDisable(id);
+	                }
+	                }
+	            });
 			ListnerInit();
 			FunctionsInit();
 	}
 
-	public void ListnerInit() throws MqttException {
-        laumio.listenTo("laumio/status/advertise");
-        laumio.listenTo("distance/value");
-        laumio.lookForIDs();
+	public void ListnerInit(){
+		
+		try {
+			laumio.addDisListener(new Laumio.DisCallback() {
+				
+				@Override
+				public void onDistanceChange(float dist) {
+					ProgressBar_Distance.setProgress(dist);
+				}
+			});
+			
+			laumio.addRemoteListener(new Laumio.RemoteCallback() {
+				@Override
+				public void onKeyReceived(String key, boolean isOn) {
+
+					if(isOn)
+					{
+						TextArea_Log.setText(key + " as been pressed");
+					}
+					else
+					{
+						TextArea_Log.setText(key + " as been released");
+					}
+				}
+			});
+		} catch (MqttException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void FunctionsInit() {
 		VBox_Connection.setVisible(false);
 		VBox_Functions.setVisible(true);
-		
+
+		HBox_Individual.setVisible(false);
 		//Interface init
 		InitButtons();
 		InitListView();
-	}
-	
-	public void MessageHandler(String topic, MqttMessage mqttMessage)
-	{/*
-        if(topic.equals("laumio/status/advertise"))
-        {
-        	int size = idList.size();
-            idList.add(new String(mqttMessage.getPayload()));
-            if(size < idList.size()) {
-            	AddNewToListDisable(new String(mqttMessage.getPayload()));
-            }
-        }
-
-        if(topic.equals("distance/value"))
-        {
-        	ProgressBar_Distance.setProgress(Double.parseDouble(new String(mqttMessage.getPayload())));
-        }*/
+		InitChoiceBox();
+		ListnerInit();
 	}
 
 	public void InitButtons() {
-		/*
 		Button_Send.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				// TODO Auto-generated method stub
-				color = ColorPicker_Color1.getValue();
 				try {
-					laumio.fill(new HashSet<String>(ListView_Enable.getItems()), (int)Math.floor(color.getRed()*255), (int)Math.floor(color.getGreen()*255), (int)Math.floor(color.getBlue()*255));
-					//laumio.fill((int)Math.floor(color.getRed()*255), (int)Math.floor(color.getGreen()*255), (int)Math.floor(color.getBlue()*255));
-					System.out.println(color.getRed());
-				} catch (MqttException e) {
+				switch(ChoiceBox_Command.getValue().toString())
+				{
+				case "Fill":
+					color = ColorPicker_Color1.getValue();
+						laumio.fill(new HashSet<String>(ListView_Enable.getItems()), (int)Math.floor(color.getRed()*255), (int)Math.floor(color.getGreen()*255), (int)Math.floor(color.getBlue()*255));
+				break;
+				case "Scanner":
+					ScannerAnnimation((int)Math.floor(Slider_Duration.getValue()));
+					break;
+				case "Rainbow":
+					Rainbow();
+					break;
+				case "Individual":
+					Individual();
+					break;
+				}
+				} catch (MqttException e1) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
+					e1.printStackTrace();
 				}
 			}
-        });*/
+        });
 		
 		Button_Exit.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
@@ -160,8 +222,100 @@ public class TestController implements Initializable {
 		});
 	}
 	
+	public void InitChoiceBox() {
+		ChoiceBox_Command.setItems(FXCollections.observableArrayList(
+			    "Fill",
+			    "Scanner",
+			    "Rainbow",
+			    "Individual")
+				);
+		
+		VBox_Duration.setVisible(false);
+		
+		ChoiceBox_Command.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> arg0, Number arg1, Number arg2) {
+				switch(ChoiceBox_Command.getItems().get((int) arg2))
+				{
+				case "Fill":
+						SetDurationOff();
+						 SetIndividualOff();
+					break;
+				case "Scanner":
+						SetDurationOn();
+						 SetIndividualOff();
+					break;
+				case "Rainbow":
+					 SetDurationOff();
+					 SetIndividualOff();
+					break;
+
+				case "Individual":
+					 SetDurationOff();
+					 SetIndividualOn();
+					break;
+				}
+			}
+		    });
+	}
+	
+	public void Individual() throws MqttException
+	{
+		laumio.setPixel(new HashSet<String>(ListView_Enable.getItems()), 9, (int)Math.floor(color.getRed()*255), (int)Math.floor(color.getGreen()*255), (int)Math.floor(color.getBlue()*255));
+		
+		/*for(CheckBox item : ledList){
+			if(item.isSelected())
+			{
+				color = ColorPicker_Color1.getValue();
+				laumio.setPixel(new HashSet<String>(ListView_Enable.getItems()), ledList.indexOf(item), (int)Math.floor(color.getRed()*255), (int)Math.floor(color.getGreen()*255), (int)Math.floor(color.getBlue()*255));
+			}
+		}*/
+	}
+	
 	public void AddNewToListDisable(String id) {
 		ListView_Disable.getItems().add(id);
+	}
+	
+	public void ScannerAnnimation(int duration) throws MqttException{
+		color = ColorPicker_Color1.getValue();
+		laumio.color_wipe(new HashSet<String>(ListView_Enable.getItems()), duration, (int)Math.floor(color.getRed()*255), (int)Math.floor(color.getGreen()*255), (int)Math.floor(color.getBlue()*255));
+	}
+	
+	public void Rainbow() throws MqttException
+	{
+		laumio.rainbow(new HashSet<String>(ListView_Enable.getItems()));
+	}
+	
+	public void SetDurationOn()
+	{
+		if(!VBox_Duration.isVisible())
+		{
+			VBox_Duration.setVisible(true);
+		}
+	}
+	
+	public void SetDurationOff()
+	{
+		if(VBox_Duration.isVisible())
+		{
+			VBox_Duration.setVisible(false);
+		}
+	}
+	
+	public void SetIndividualOn() {
+
+		if(!HBox_Individual.isVisible())
+		{
+			HBox_Individual.setVisible(true);
+		}
+	}
+	
+	public void SetIndividualOff() {
+
+		if(HBox_Individual.isVisible())
+		{
+			HBox_Individual.setVisible(false);
+		}
 	}
 	
 }
