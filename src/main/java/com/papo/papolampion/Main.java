@@ -39,6 +39,13 @@ public class Main {
             pub.fill("Laumio_CD0522", 0, 255, 0);
             pub.fill("Laumio_1D9486", 0, 255, 0);*/
 
+            pub.refreshIDs(new Laumio.IDCallback() {
+                @Override
+                public void onIDReceived(String id) {
+                    System.out.println("New id received " + id);
+                }
+            });
+
             pub.addBPListener(new Laumio.BPCallback() {
                 public void onStatusChanged(boolean isOn) {
                     System.out.println("Sensor online " + isOn);
@@ -62,8 +69,8 @@ public class Main {
             });
 
             pub.addRemoteListener(new Laumio.RemoteCallback() {
-                public void onKeyReceived(String key) {
-                    System.out.println("Key pressed " + key);
+                public void onKeyReceived(String key, boolean isOn) {
+                    System.out.println("Key pressed " + key + " pressed " + isOn);
                 }
             });
 

@@ -71,23 +71,7 @@ public class TestController implements Initializable {
 	public void Connect(String ip)
 	{
 		try {
-			laumio = new Laumio(ip, new MqttCallback() {
-			    public void connectionLost(Throwable throwable) {
-			        System.out.println("Disconnected");
-			    }
-
-			    public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
-			        MessageHandler(s, mqttMessage);
-			    }
-
-			    public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
-			    	try {
-						System.out.println(iMqttDeliveryToken.getMessage().getPayload());
-					} catch (MqttException e) {
-						e.printStackTrace();
-					}
-			    }
-			});
+			laumio = new Laumio(ip);
 			ListnerInit();
 			FunctionsInit();
 	        

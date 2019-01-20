@@ -10,17 +10,27 @@ public class Laumio implements MqttCallback {
 
     private BPCallback bpCallback;
     private RemoteCallback remoteCallback;
+    private IDCallback idCallback;
 
     public Laumio(String address) throws MqttException
     {
         client = new MqttClient(address, MqttClient.generateClientId());
         client.setCallback(this);
         client.connect();
+
+        client.subscribe("laumio/status/advertise");
     }
 
     public void listenTo(String topic) throws MqttException
     {
         client.subscribe(topic);
+    }
+
+    public void refreshIDs(IDCallback callback) throws MqttException
+    {
+        idCallback = callback;
+
+        client.publish("laumio/all/discover", new MqttMessage());
     }
 
     public void addBPListener(BPCallback callback) throws MqttException
@@ -67,11 +77,16 @@ public class Laumio implements MqttCallback {
         client.subscribe("remote/9/state");
     }
 
+    public void parseIDMessage(MqttMessage mqttMessage)
+    {
+        idCallback.onIDReceived(new String(mqttMessage.getPayload()));
+    }
+
     public void parseRemoteMessage(String topic, MqttMessage mqttMessage)
     {
         String key = topic.substring(topic.indexOf("/") + 1, topic.lastIndexOf("/"));
 
-        remoteCallback.onKeyReceived(key);
+        remoteCallback.onKeyReceived(key, new String(mqttMessage.getPayload()).equals("ON"));
     }
 
     public void parseBPMessage(String topic, MqttMessage mqttMessage)
@@ -322,6 +337,9 @@ public class Laumio implements MqttCallback {
         else if(s.startsWith("remote")) {
             parseRemoteMessage(s, mqttMessage);
         }
+        else if(s.equals("laumio/status/advertise")) {
+            parseIDMessage(mqttMessage);
+        }
     }
 
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
@@ -337,6 +355,10 @@ public class Laumio implements MqttCallback {
     }
 
     public interface RemoteCallback {
-        void onKeyReceived(String key);
+        void onKeyReceived(String key, boolean isOn);
+    }
+
+    public interface IDCallback {
+        void onIDReceived(String id);
     }
 }
