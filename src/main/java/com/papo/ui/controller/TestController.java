@@ -77,11 +77,26 @@ public class TestController implements Initializable {
 		idList = new HashSet<String>();
 		ledList = new ArrayList<CheckBox>();
 		
+		ledList.add(CheckBox_LED1);
+		ledList.add(CheckBox_LED2);
+		ledList.add(CheckBox_LED3);
+		ledList.add(CheckBox_LED4);
+		ledList.add(CheckBox_LED5);
+		ledList.add(CheckBox_LED6);
+		ledList.add(CheckBox_LED7);
+		ledList.add(CheckBox_LED8);
+		ledList.add(CheckBox_LED9);
+		ledList.add(CheckBox_LED10);
+		ledList.add(CheckBox_LED11);
+		ledList.add(CheckBox_LED12);
+		ledList.add(CheckBox_LED13);
+		
 		ConnectionInit();
 	}
 	
 	public void ConnectionInit()
 	{
+		color = new Color(0,0,0,0);
 		VBox_Functions.setVisible(false);
 		
 		Button_Connect.setOnAction(new EventHandler<ActionEvent>() {
@@ -188,9 +203,9 @@ public class TestController implements Initializable {
 		Button_Exit.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				try {
-					laumio.close();
 					Stage stage = (Stage) Button_Exit.getScene().getWindow();
 				    stage.close();
+					laumio.close();
 				} catch (MqttException e) {
 					e.printStackTrace();
 				}
@@ -261,15 +276,15 @@ public class TestController implements Initializable {
 	
 	public void Individual() throws MqttException
 	{
-		laumio.setPixel(new HashSet<String>(ListView_Enable.getItems()), 9, (int)Math.floor(color.getRed()*255), (int)Math.floor(color.getGreen()*255), (int)Math.floor(color.getBlue()*255));
-		
-		/*for(CheckBox item : ledList){
+
+		for(CheckBox item : ledList){
 			if(item.isSelected())
 			{
 				color = ColorPicker_Color1.getValue();
+				
 				laumio.setPixel(new HashSet<String>(ListView_Enable.getItems()), ledList.indexOf(item), (int)Math.floor(color.getRed()*255), (int)Math.floor(color.getGreen()*255), (int)Math.floor(color.getBlue()*255));
-			}
-		}*/
+				}
+		}
 	}
 	
 	public void AddNewToListDisable(String id) {
