@@ -7,17 +7,41 @@
 
 <AnchorPane prefHeight="469.0" prefWidth="420.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.papo.ui.controller.TestController">
    <children>
-      <Pane fx:id="Pane_Connection" prefHeight="605.0" prefWidth="557.0">
+      <VBox fx:id="VBox_Functions" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <HBox layoutX="16.0" layoutY="14.0" prefHeight="31.0" prefWidth="527.0">
+            <ChoiceBox fx:id="ChoiceBox_Command" prefHeight="25.0" prefWidth="117.0" />
+            <VBox prefHeight="42.0" prefWidth="235.0">
                <children>
-                  <HBox prefHeight="31.0" prefWidth="207.0">
+                  <Label text="Distance :" />
+                  <ProgressBar fx:id="ProgressBar_Distance" prefWidth="200.0" progress="0.0" />
+               </children>
+            </VBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <ColorPicker fx:id="ColorPicker_Color1" prefHeight="25.0" prefWidth="145.0" />
+                  <Button fx:id="Button_Send" mnemonicParsing="false" text="Send" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="211.0" prefWidth="308.0">
+               <children>
+                  <ListView fx:id="ListView_Enable" prefHeight="200.0" prefWidth="200.0" />
+                  <ListView fx:id="ListView_Disable" prefHeight="200.0" prefWidth="200.0" />
+               </children>
+            </HBox>
+            <Button fx:id="Button_Exit" mnemonicParsing="false" text="Exit" />
+         </children>
+      </VBox>
+      <VBox fx:id="VBox_Connection" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="31.0" prefWidth="207.0">
                      <children>
                         <Label prefHeight="25.0" prefWidth="38.0" text="IP :" />
                         <TextField fx:id="TextField_IP" text="mpd.lan" />
                      </children>
                   </HBox>
-                  <HBox prefHeight="31.0" prefWidth="237.0">
+                  <HBox alignment="CENTER" prefHeight="31.0" prefWidth="237.0">
                      <children>
                         <Label prefHeight="25.0" prefWidth="41.0" text="Port :" />
                         <TextField fx:id="TextField_Port" text="1883" />
@@ -25,28 +49,8 @@
                   </HBox>
                   <Button fx:id="Button_Connect" mnemonicParsing="false" prefHeight="25.0" prefWidth="84.0" text="Connect" />
                </children>
-            </HBox>
-         </children>
-      </Pane>
-      <Pane fx:id="Pane_Functions" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-         <children>
-            <ChoiceBox fx:id="ChoiceBox_Command" layoutX="73.0" layoutY="303.0" prefHeight="25.0" prefWidth="117.0" />
-            <VBox layoutX="280.0" layoutY="231.0" prefHeight="42.0" prefWidth="235.0">
-               <children>
-                  <Label text="Distance :" />
-                  <ProgressBar fx:id="ProgressBar_Distance" prefWidth="200.0" progress="0.0" />
-               </children>
             </VBox>
-            <HBox layoutX="125.0" layoutY="363.0" prefHeight="211.0" prefWidth="308.0">
-               <children>
-                  <ListView fx:id="ListView_Enable" prefHeight="200.0" prefWidth="200.0" />
-                  <ListView fx:id="ListView_Disable" prefHeight="200.0" prefWidth="200.0" />
-               </children>
-            </HBox>
-            <Button fx:id="Button_Exit" layoutX="498.0" layoutY="562.0" mnemonicParsing="false" text="Exit" />
-            <ColorPicker fx:id="ColorPicker_Color1" layoutX="207.0" layoutY="290.0" prefHeight="25.0" prefWidth="145.0" />
-            <Button fx:id="Button_Send" layoutX="427.0" layoutY="316.0" mnemonicParsing="false" text="Send" />
          </children>
-      </Pane>
+      </VBox>
    </children>
 </AnchorPane>

@@ -8,8 +8,6 @@ import java.util.Set;
 
 import javafx.application.Platform;
 
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
-import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
@@ -26,12 +24,13 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
 public class TestController implements Initializable {
-	@FXML private Pane Pane_Connection;
-	@FXML private Pane Pane_Functions;
+	@FXML private VBox  VBox_Connection;
+	@FXML private VBox VBox_Functions;
     @FXML private Button Button_Send;
     @FXML private Button Button_Exit;
     @FXML private Button Button_Connect;
@@ -45,39 +44,34 @@ public class TestController implements Initializable {
     @FXML private TextField TextField_Port;
     
     
-    private Set<String> idList;
-    Color color;
-    
     private Laumio laumio;
     
 	public void initialize(URL location, ResourceBundle resources) {
-		
 		ConnectionInit();
 	}
 	
 	public void ConnectionInit()
 	{
-		Pane_Functions.setVisible(false);
+		VBox_Functions.setVisible(false);
 		
 		Button_Connect.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				String connectStr = new String("tcp://" + TextField_IP.getText() + ":" + TextField_Port.getText());
 				System.out.println(connectStr);
-				Connect(connectStr);
+				try {
+					Connect(connectStr);
+				} catch (MqttException e) {
+					e.printStackTrace();
+				}
 			}
         });
 	}
 	
-	public void Connect(String ip)
+	public void Connect(String ip) throws MqttException
 	{
-		try {
 			laumio = new Laumio(ip);
 			ListnerInit();
 			FunctionsInit();
-	        
-		} catch (MqttException e) {
-			e.printStackTrace();
-		}
 	}
 
 	public void ListnerInit() throws MqttException {
@@ -87,8 +81,8 @@ public class TestController implements Initializable {
 	}
 	
 	public void FunctionsInit() {
-		Pane_Connection.setVisible(false);
-		Pane_Functions.setVisible(true);
+		VBox_Connection.setVisible(false);
+		VBox_Functions.setVisible(true);
 		
 		//Interface init
 		InitButtons();
@@ -96,10 +90,10 @@ public class TestController implements Initializable {
 	}
 	
 	public void MessageHandler(String topic, MqttMessage mqttMessage)
-	{
+	{/*
         if(topic.equals("laumio/status/advertise"))
         {
-        	int size =idList.size();
+        	int size = idList.size();
             idList.add(new String(mqttMessage.getPayload()));
             if(size < idList.size()) {
             	AddNewToListDisable(new String(mqttMessage.getPayload()));
@@ -109,11 +103,11 @@ public class TestController implements Initializable {
         if(topic.equals("distance/value"))
         {
         	ProgressBar_Distance.setProgress(Double.parseDouble(new String(mqttMessage.getPayload())));
-        }
+        }*/
 	}
 
 	public void InitButtons() {
-		
+		/*
 		Button_Send.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
 				// TODO Auto-generated method stub
@@ -127,7 +121,7 @@ public class TestController implements Initializable {
 					e.printStackTrace();
 				}
 			}
-        });
+        });*/
 		
 		Button_Exit.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {
