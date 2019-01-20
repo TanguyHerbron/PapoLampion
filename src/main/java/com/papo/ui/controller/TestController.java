@@ -1,6 +1,7 @@
 package com.papo.ui.controller;
 
 
+import java.io.File;
 import java.net.URL;
 import java.util.*;
 
@@ -67,6 +68,9 @@ public class TestController implements Initializable {
     @FXML private CheckBox CheckBox_LED11;
     @FXML private CheckBox CheckBox_LED12;
     @FXML private CheckBox CheckBox_LED13;
+
+    @FXML private ComboBox ComboBox_Animation;
+    @FXML private Button Button_Send_Animation;
     
     private Set<String> idList;
     
@@ -151,6 +155,12 @@ public class TestController implements Initializable {
 		ListnerInit();
 		FunctionsInit();
 
+		File file = new File("C:\\Users\\Guitoune\\Desktop\\Animations");
+
+		for(int i = 0; i < file.listFiles().length; i++)
+		{
+			ComboBox_Animation.getItems().add(file.listFiles()[i].getName());
+		}
 
 		InitDiscordBot();
 	}
@@ -307,6 +317,16 @@ public class TestController implements Initializable {
 				}
 			}
         });
+
+		Button_Send_Animation.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent event) {
+				if(ComboBox_Animation.getSelectionModel().getSelectedItem() != null)
+				{
+					laumio.readAnimation(ComboBox_Animation.getSelectionModel().getSelectedItem().toString());
+				}
+			}
+		});
 		
 		Button_Exit.setOnAction(new EventHandler<ActionEvent>() {
 			public void handle(ActionEvent event) {

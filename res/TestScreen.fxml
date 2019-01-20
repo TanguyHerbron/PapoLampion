@@ -13,6 +13,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
+<?import javafx.scene.control.ComboBox?>
 <AnchorPane prefHeight="469.0" prefWidth="420.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.papo.ui.controller.TestController">
    <children>
       <VBox fx:id="VBox_Connection" alignment="CENTER" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -49,8 +50,18 @@
                   <ChoiceBox fx:id="ChoiceBox_Command" prefHeight="25.0" prefWidth="117.0" />
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <ColorPicker fx:id="ColorPicker_Color1" prefHeight="25.0" prefWidth="145.0" />
-                        <Button fx:id="Button_Send" mnemonicParsing="false" text="Send" />
+                        <VBox>
+                           <children>
+                              <ColorPicker fx:id="ColorPicker_Color1" prefHeight="25.0" prefWidth="145.0" />
+                              <Button fx:id="Button_Send" mnemonicParsing="false" text="Send color" />
+                           </children>
+                        </VBox>
+                        <VBox>
+                           <children>
+                              <ComboBox fx:id="ComboBox_Animation" prefHeight="25.0" prefWidth="145.0" />
+                              <Button fx:id="Button_Send_Animation" mnemonicParsing="false" text="Send animation" />
+                           </children>
+                        </VBox>
                      </children>
                   </HBox>
                </children>
@@ -99,7 +110,7 @@
                <children>
                   <Button fx:id="Button_Prev" mnemonicParsing="false" text="Prev" />
                   <Button fx:id="Button_Toggle" mnemonicParsing="false" text="Toggle" />
-                  <Button fx:id="Button_Stop" mnemonicParsing="false" style="-fx-background-color: red;" text="FUCKING STOP" />
+                  <Button fx:id="Button_Stop" mnemonicParsing="false" style="-fx-background-color: red;" text="STOP" />
                   <Button fx:id="Button_Next" mnemonicParsing="false" text="Next" />
                </children>
             </HBox>

@@ -2,7 +2,12 @@ package com.papo.lib;
 
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import java.io.*;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 public class Laumio implements MqttCallback {
@@ -362,6 +367,46 @@ public class Laumio implements MqttCallback {
 
     public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
 
+    }
+
+    public void readAnimation(String str)
+    {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String line = null;
+                    String file = "";
+                    FileReader fileReader = new FileReader("C:\\Users\\Guitoune\\Desktop\\Animations\\" + str);
+
+                    BufferedReader bufferedReader =
+                            new BufferedReader(fileReader);
+
+                    while((line = bufferedReader.readLine()) != null) {
+                        file += line;
+                    }
+
+                    JSONArray jsonArray = new JSONArray(file);
+
+                    for(int i = 0; i < jsonArray.length(); i++)
+                    {
+                        if(jsonArray.getJSONObject(i).get("type").equals("tempo"))
+                        {
+                            Thread.sleep(jsonArray.getJSONObject(i).getInt("time"));
+                        }
+                        else if(jsonArray.getJSONObject(i).get("type").equals("fill"))
+                        {
+                            fill(new HashSet<>(Arrays.asList(jsonArray.getJSONObject(i).getString("id"))),
+                                    jsonArray.getJSONObject(i).getInt("R"),
+                                    jsonArray.getJSONObject(i).getInt("G"),
+                                    jsonArray.getJSONObject(i).getInt("B"));
+                        }
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     public interface BPCallback {
