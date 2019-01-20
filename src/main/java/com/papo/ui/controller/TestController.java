@@ -13,6 +13,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 
+import javafx.scene.input.MouseEvent;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
 import com.papo.lib.Laumio;
@@ -52,6 +53,11 @@ public class TestController implements Initializable {
     @FXML private TextField TextField_Port;
     @FXML private Slider Slider_Duration;
     @FXML private TextArea TextArea_Log;
+
+    @FXML private Button Button_Prev;
+    @FXML private Button Button_Next;
+    @FXML private Button Button_Toggle;
+    @FXML private Button Button_Stop;
     
     @FXML private CheckBox CheckBox_LED1;
     @FXML private CheckBox CheckBox_LED2;
@@ -170,7 +176,55 @@ public class TestController implements Initializable {
 		InitListView();
 		InitChoiceBox();
 		ListnerInit();
+		InitMedia();
 	}
+
+	private void InitMedia()
+    {
+        Button_Prev.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                try {
+                    laumio.prevMusic();
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        Button_Next.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                try {
+                    laumio.nextMusic();
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        Button_Stop.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                try {
+                    laumio.stopTheFuckingMusic();
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        Button_Toggle.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                try {
+                    laumio.toggleMusic();
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
 	public void InitButtons() {
 		Button_Send.setOnAction(new EventHandler<ActionEvent>() {

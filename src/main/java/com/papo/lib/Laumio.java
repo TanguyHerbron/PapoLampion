@@ -317,12 +317,20 @@ public class Laumio implements MqttCallback {
         client.publish("laumio/all/discover", new MqttMessage());
     }
 
-    public void stockTheFuckingMusic() throws MqttException {
+    public void stopTheFuckingMusic() throws MqttException {
         client.publish("music/control/stop", new MqttMessage());
+    }
+
+    public void prevMusic() throws MqttException {
+        client.publish("music/control/previous", new MqttMessage());
     }
 
     public void nextMusic() throws MqttException {
         client.publish("music/control/next", new MqttMessage());
+    }
+
+    public void toggleMusic() throws MqttException {
+        client.publish("music/control/toggle", new MqttMessage());
     }
 
     public void connectionLost(Throwable throwable) {
