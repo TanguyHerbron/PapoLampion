@@ -13,6 +13,7 @@ public class Laumio implements MqttCallback {
     private RemoteCallback remoteCallback;
     private IDCallback idCallback;
     private DisCallback disCallback;
+    private PresCallback presCallback;
 
     public Laumio(String address) throws MqttException
     {
@@ -84,6 +85,13 @@ public class Laumio implements MqttCallback {
         client.subscribe("remote/7/state");
         client.subscribe("remote/8/state");
         client.subscribe("remote/9/state");
+    }
+
+    public void addPresListener(PresCallback callback) throws MqttException
+    {
+        presCallback = callback;
+
+        client.subscribe("presence/state");
     }
 
     public void parseIDMessage(MqttMessage mqttMessage)
@@ -333,6 +341,12 @@ public class Laumio implements MqttCallback {
         client.publish("music/control/toggle", new MqttMessage());
     }
 
+    public void setVolume(int vol) throws MqttException {
+        MqttMessage message = new MqttMessage();
+        message.setPayload(String.valueOf(vol).getBytes());
+        client.publish("music/control/setvol", message);
+    }
+
     public void connectionLost(Throwable throwable) {
 
     }
@@ -350,6 +364,9 @@ public class Laumio implements MqttCallback {
         }
         else if(s.startsWith("distance")) {
             parseDistMessage(s, mqttMessage);
+        }
+        else if(s.equals("presence/state")) {
+            presCallback.onPresChanged(new String(mqttMessage.getPayload()).equals("ON"));
         }
     }
 
@@ -375,5 +392,9 @@ public class Laumio implements MqttCallback {
 
     public interface DisCallback {
         void onDistanceChange(float dist);
+    }
+
+    public interface PresCallback {
+        void onPresChanged(boolean isSomeoneOnTheThrone);
     }
 }

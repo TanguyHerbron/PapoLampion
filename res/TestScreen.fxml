@@ -64,7 +64,7 @@
             <HBox fx:id="HBox_Individual" alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
                   <CheckBox fx:id="CheckBox_LED1" mnemonicParsing="false" />
-                  <CheckBox fx:id="CheckBox_LED1" mnemonicParsing="false" />
+                  <CheckBox fx:id="CheckBox_LED2" mnemonicParsing="false" />
                   <CheckBox fx:id="CheckBox_LED3" mnemonicParsing="false" />
                   <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
                      <children>
@@ -84,12 +84,17 @@
             </HBox>
             <HBox alignment="CENTER" prefHeight="211.0" prefWidth="308.0">
                <children>
-                  <ListView fx:id="ListView_Enable" prefHeight="200.0" prefWidth="200.0" />
                   <ListView fx:id="ListView_Disable" prefHeight="200.0" prefWidth="200.0" />
+                  <ListView fx:id="ListView_Enable" prefHeight="200.0" prefWidth="200.0" />
                </children>
             </HBox>
-            <TextField fx:id="TextField_Log" />
+            <Label fx:id="Label_Log" />
             <Button fx:id="Button_Exit" mnemonicParsing="false" text="Exit" />
+            <HBox fx:id="HBox_Volume" alignment="CENTER">
+               <children>
+                  <Slider fx:id="Slider_Volume" maxWidth="200.0" />
+               </children>
+            </HBox>
             <HBox fx:id="HBox_MediaPlayer" alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                <children>
                   <Button fx:id="Button_Prev" mnemonicParsing="false" text="Prev" />

@@ -13,6 +13,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import org.eclipse.paho.client.mqttv3.MqttException;
 
@@ -22,15 +23,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ColorPicker;
-import javafx.scene.control.ListView;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.Slider;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -52,12 +44,13 @@ public class TestController implements Initializable {
     @FXML private TextField TextField_IP;
     @FXML private TextField TextField_Port;
     @FXML private Slider Slider_Duration;
-    @FXML private TextArea TextArea_Log;
+    @FXML private Label Label_Log;
 
     @FXML private Button Button_Prev;
     @FXML private Button Button_Next;
     @FXML private Button Button_Toggle;
     @FXML private Button Button_Stop;
+    @FXML private Slider Slider_Volume;
     
     @FXML private CheckBox CheckBox_LED1;
     @FXML private CheckBox CheckBox_LED2;
@@ -78,6 +71,8 @@ public class TestController implements Initializable {
     private Laumio laumio;
 	private Color color;
 	private List<CheckBox> ledList;
+
+	private Thread policeThread;
     
 	public void initialize(URL location, ResourceBundle resources) {
 		idList = new HashSet<String>();
@@ -150,13 +145,30 @@ public class TestController implements Initializable {
 				@Override
 				public void onKeyReceived(String key, boolean isOn) {
 
-					if(isOn)
+				    System.out.println(">> " + key + " " + isOn);
+
+				    Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							if(isOn)
+							{
+								Label_Log.setText(key + " as been pressed");
+							}
+							else
+							{
+								Label_Log.setText(key + " as been released");
+							}
+						}
+					});
+				}
+			});
+
+			laumio.addPresListener(new Laumio.PresCallback() {
+				@Override
+				public void onPresChanged(boolean isSomeoneOnTheThrone) {
+					if(isSomeoneOnTheThrone)
 					{
-						TextArea_Log.setText(key + " as been pressed");
-					}
-					else
-					{
-						TextArea_Log.setText(key + " as been released");
+						Police();
 					}
 				}
 			});
@@ -224,6 +236,17 @@ public class TestController implements Initializable {
                 }
             }
         });
+
+        Slider_Volume.valueProperty().addListener(new ChangeListener<Number>() {
+			@Override
+			public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+				try {
+					laumio.setVolume(newValue.intValue());
+				} catch (MqttException e) {
+					e.printStackTrace();
+				}
+			}
+		});
     }
 
 	public void InitButtons() {
@@ -245,6 +268,9 @@ public class TestController implements Initializable {
 					break;
 				case "Individual":
 					Individual();
+					break;
+				case "Police":
+					Police();
 					break;
 				}
 				} catch (MqttException e1) {
@@ -296,7 +322,8 @@ public class TestController implements Initializable {
 			    "Fill",
 			    "Scanner",
 			    "Rainbow",
-			    "Individual")
+			    "Individual",
+				"Police")
 				);
 		
 		VBox_Duration.setVisible(false);
@@ -323,6 +350,11 @@ public class TestController implements Initializable {
 					 SetDurationOff();
 					 SetIndividualOn();
 					break;
+
+				case "Police":
+					SetDurationOff();
+					SetIndividualOff();
+					break;
 				}
 			}
 		    });
@@ -339,6 +371,46 @@ public class TestController implements Initializable {
 				laumio.setPixel(new HashSet<String>(ListView_Enable.getItems()), ledList.indexOf(item), (int)Math.floor(color.getRed()*255), (int)Math.floor(color.getGreen()*255), (int)Math.floor(color.getBlue()*255));
 				}
 		}
+	}
+
+	public void Police()
+	{
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+
+				try {
+					for(int i = 0; i < 10; i++){
+						laumio.setPixel(new HashSet<String>(ListView_Enable.getItems()), 9, 255, 255, 255);
+
+						laumio.setColumn(new HashSet<String>(ListView_Enable.getItems()), 0, 255, 0, 0);
+						laumio.setColumn(new HashSet<String>(ListView_Enable.getItems()), 1, 0, 0, 255);
+						laumio.setColumn(new HashSet<String>(ListView_Enable.getItems()), 2, 255, 0, 0);
+						laumio.setColumn(new HashSet<String>(ListView_Enable.getItems()), 3, 0, 0, 255);
+
+						try {
+							Thread.sleep(200);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						laumio.setPixel(new HashSet<String>(ListView_Enable.getItems()), 9, 255, 255, 255);
+
+						laumio.setColumn(new HashSet<String>(ListView_Enable.getItems()), 0, 0, 0, 255);
+						laumio.setColumn(new HashSet<String>(ListView_Enable.getItems()), 1, 255, 0, 0);
+						laumio.setColumn(new HashSet<String>(ListView_Enable.getItems()), 2, 0, 0, 255);
+						laumio.setColumn(new HashSet<String>(ListView_Enable.getItems()), 3, 255, 0, 0);
+
+						try {
+							Thread.sleep(200);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}catch (MqttException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
 	}
 	
 	public void AddNewToListDisable(String id) {
